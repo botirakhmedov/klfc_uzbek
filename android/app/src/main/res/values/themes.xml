@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DayNight has no NoActionBar variant in the platform themes, so turn the bar off
+         here: the setup screen draws its own title. -->
+    <style name="Theme.UzbekKeyboard" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>
