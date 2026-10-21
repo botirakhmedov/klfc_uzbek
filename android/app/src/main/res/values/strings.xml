@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The whole interface is written in the 2026 alphabet: this is a keyboard for that
+     alphabet, so its own text should be in it. -->
+<resources>
+    <string name="app_name">Özbek klaviaturasi</string>
+    <string name="ime_name">Özbekça (2026)</string>
+    <string name="subtype_name">QŞERTY</string>
+    <!-- Printed on the space bar, the way stock keyboards name the active language. -->
+    <string name="space_label">Özbekça</string>
+
+    <string name="setup_title">Yangi alifbo klaviaturasi</string>
+    <string name="setup_body">Ş, Ç, Ö va Ğ — alohida tugmalarda. Tutuq belgisi (ʼ) pastki qatorda turadi. w yoki c kerak bölsa, ş va ç ni bosib turing.</string>
+
+    <string name="setup_step_one">1. Sozlamalarda yoqiş</string>
+    <string name="setup_step_one_note">Tizim sozlamalari açiladi. Röyxatdan «Özbek klaviaturasi» ni yoqing.</string>
+    <string name="setup_step_two">2. Yoziş uçun tanlaş</string>
+    <string name="setup_step_two_note">Klaviatura röyxati çiqadi — şu klaviaturani tanlang.</string>
+
+    <string name="setup_try">Sinab köring</string>
+    <string name="setup_hint">Şu yerga yozing</string>
+</resources>

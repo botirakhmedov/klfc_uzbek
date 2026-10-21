@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="keyboard_background">#15171A</color>
+    <color name="key_background">#2A2E34</color>
+    <color name="key_background_special">#1F2328</color>
+    <color name="key_background_pressed">#3C424A</color>
+    <color name="key_background_accent">#3B7DDD</color>
+    <color name="key_text">#F2F3F5</color>
+    <color name="key_hint">#7B828C</color>
+    <color name="popup_background">#2A2E34</color>
+</resources>

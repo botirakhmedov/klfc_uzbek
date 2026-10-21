@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>uz.alifbo.keyboardlayouts</string>
+	<key>CFBundleName</key>
+	<string>Uzbek2026</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>KLInfo_uz-altgr</key>
+	<dict>
+		<key>TISInputSourceID</key>
+		<string>uz.alifbo.keyboardlayouts.uz-altgr</string>
+		<key>TISIntendedLanguage</key>
+		<string>uz-Latn</string>
+	</dict>
+	<key>KLInfo_uz-qserty</key>
+	<dict>
+		<key>TISInputSourceID</key>
+		<string>uz.alifbo.keyboardlayouts.uz-qserty</string>
+		<key>TISIntendedLanguage</key>
+		<string>uz-Latn</string>
+	</dict>
+</dict>
+</plist>

@@ -1,0 +1,97 @@
+name: UzbekKeyboard
+options:
+  bundleIdPrefix: uz.alifbo
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    TARGETED_DEVICE_FAMILY: "1,2"
+
+targets:
+  UzbekKeyboard:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/App
+      - path: Sources/Shared
+    info:
+      path: Resources/App-Info.plist
+      properties:
+        CFBundleDisplayName: Özbek klaviaturasi
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: uz.alifbo.keyboard
+    dependencies:
+      - target: Keyboard
+        embed: true
+
+  Keyboard:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Sources/Keyboard
+      - path: Sources/Shared
+    info:
+      path: Resources/Keyboard-Info.plist
+      properties:
+        CFBundleDisplayName: Özbekça
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.keyboard-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).KeyboardViewController
+          NSExtensionAttributes:
+            PrimaryLanguage: uz-Latn
+            PrefersRightToLeft: false
+            IsASCIICapable: false
+            RequestsOpenAccess: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: uz.alifbo.keyboard.Keyboard
+
+  UzbekKeyboardUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: UzbekKeyboard
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: uz.alifbo.keyboard.UITests
+        TEST_TARGET_NAME: UzbekKeyboard
+
+  UzbekKeyboardTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+      - path: Sources/Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: uz.alifbo.keyboard.Tests
+
+schemes:
+  UzbekKeyboard:
+    build:
+      targets:
+        UzbekKeyboard: all
+        Keyboard: all
+        UzbekKeyboardTests: [test]
+        UzbekKeyboardUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - UzbekKeyboardTests
+        - UzbekKeyboardUITests
