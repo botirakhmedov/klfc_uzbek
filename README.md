@@ -66,6 +66,26 @@ number row on top:
 Installing
 ----------
 
+### One command, on macOS or Linux
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | sh
+```
+
+The script is read from a pipe and so cannot ask anything; it takes its options from the
+environment instead:
+
+```sh
+curl -fsSL .../install.sh | VARIANT=uz-altgr sh     # the other variant
+curl -fsSL .../install.sh | ACTION=uninstall sh     # remove it again
+```
+
+On macOS it drops the bundle into `~/Library/Keyboard Layouts`; on Linux it runs the XKB
+install script with `sudo`. Windows is not covered, because its `.klc` has to be compiled
+with MSKLC, which is a GUI installer — see below.
+
+The sections below are the same thing by hand, from a checkout.
+
 ### macOS
 
 ```sh
