@@ -61,17 +61,21 @@ QWERTY umuman özgarmaydi, yangi harflar esa `AltGr` + `s`, `c`, `o`, `g` da tur
 curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | sh
 ```
 
-Skript pipe'dan öqilgani uçun hech narsa söray olmaydi — sozlamalar environment orqali
-beriladi:
+Skript qaysi variantni örnatişni söraydi, söng har bir klaviş nima qilişini yozib
+beradi. Savolni ötkazib yuboriş uçun (yoki terminal yöq bölsa) sozlamani environment
+orqali bering:
 
 ```sh
-curl -fsSL .../install.sh | VARIANT=uz-altgr sh     # ikkinçi variant
-curl -fsSL .../install.sh | ACTION=uninstall sh     # öçiriş
+curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | VARIANT=uz-altgr sh
+curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | ACTION=uninstall sh
 ```
 
-macOS'da bundle `~/Library/Keyboard Layouts` ga köçiriladi, Linux'da esa XKB skripti
-`sudo` bilan işga tuşiriladi. Windows bu yölga kirmaydi — u yerda `.klc` ni MSKLC bilan
-yiğiş kerak, pastda yozilgan.
+macOS'da bundle `~/Library/Keyboard Layouts` ga köçiriladi. Linux'da XKB skripti `sudo`
+bilan işga tuşiriladi, söng klaviaturaga qanday ötiş körsatiladi — bu X11 va Wayland'da
+har xil: **Wayland'da `setxkbmap` faqat XWayland'ga ta'sir qiladi**, haqiqiy klaviaturani
+özgartirmaydi, şuning uçun sozlamalardan yoki `gsettings` orqali tanlanadi.
+
+Windows bu yölga kirmaydi — u yerda `.klc` ni MSKLC bilan yiğiş kerak, pastda yozilgan.
 
 Quyidagilar — şu işning qölda bajariliş yöli.
 

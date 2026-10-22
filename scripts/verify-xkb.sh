@@ -16,6 +16,14 @@ SYSTEM_XKB="${XKB_BASE:-/usr/share/X11/xkb}"
 command -v xkbcli >/dev/null || { echo "xkbcli not found; install libxkbcommon-tools" >&2; exit 1; }
 [ -d "$SYSTEM_XKB" ] || { echo "no xkb data at $SYSTEM_XKB; install xkb-data" >&2; exit 1; }
 
+# From libxkbcommon 1.8 or so, how-to-type loads Compose data and gives up entirely when
+# the locale has none — which is the normal state inside a container. Skip it where the
+# option exists; older versions never looked at Compose in the first place.
+COMPOSE_FLAG=""
+if xkbcli how-to-type --help 2>&1 | grep -q -- --disable-compose; then
+  COMPOSE_FLAG="--disable-compose"
+fi
+
 # The letters that make this layout worth installing, plus the ordinary characters a
 # half-registered layout quietly loses.
 CHECKS=(
@@ -31,7 +39,10 @@ for dir in "$ROOT"/dist/linux/*/; do
 
   base="$(mktemp -d)"
   trap 'rm -rf "$base"' EXIT
-  cp -r "$SYSTEM_XKB" "$base/xkb"
+  # -L, because distributions are starting to ship /usr/share/X11/xkb as a symlink to
+  # xkeyboard-config-2 (Ubuntu 26 does); copying it as a link leaves a dangling one.
+  mkdir -p "$base/xkb"
+  cp -RL "$SYSTEM_XKB/." "$base/xkb/"
   "$dir/install-system.sh" -o "$base/xkb" >/dev/null
   export XKB_CONFIG_ROOT="$base/xkb"
 
@@ -52,7 +63,7 @@ for dir in "$ROOT"/dist/linux/*/; do
   for check in "${CHECKS[@]}"; do
     character="${check% *}"
     codepoint="${check#* }"
-    if ! xkbcli how-to-type --layout "$layout" "$codepoint" 2>/dev/null \
+    if ! xkbcli how-to-type ${COMPOSE_FLAG:+$COMPOSE_FLAG} --layout "$layout" "$codepoint" 2>/dev/null \
          | grep -qE '^[[:space:]]*[0-9]+'; then
       missing+=("$character")
     fi

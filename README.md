@@ -72,17 +72,20 @@ Installing
 curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | sh
 ```
 
-The script is read from a pipe and so cannot ask anything; it takes its options from the
+It asks which of the two layouts you want, then prints what each key does. To skip the
+question — or where there is no terminal to ask on, such as CI — set the options in the
 environment instead:
 
 ```sh
-curl -fsSL .../install.sh | VARIANT=uz-altgr sh     # the other variant
-curl -fsSL .../install.sh | ACTION=uninstall sh     # remove it again
+curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | VARIANT=uz-altgr sh
+curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | ACTION=uninstall sh
 ```
 
 On macOS it drops the bundle into `~/Library/Keyboard Layouts`; on Linux it runs the XKB
-install script with `sudo`. Windows is not covered, because its `.klc` has to be compiled
-with MSKLC, which is a GUI installer — see below.
+install script with `sudo` and then says how to switch to the layout, which differs
+between X11 and Wayland — under Wayland `setxkbmap` only reaches XWayland and leaves the
+real keyboard alone. Windows is not covered, because its `.klc` has to be compiled with
+MSKLC, which is a GUI installer — see below.
 
 The sections below are the same thing by hand, from a checkout.
 
