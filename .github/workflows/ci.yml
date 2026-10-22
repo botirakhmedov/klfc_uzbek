@@ -26,8 +26,18 @@ jobs:
           shellcheck -s sh install.sh
           sh ./install.sh
           test -f /usr/share/X11/xkb/symbols/uzqserty
+          # Present is not the same as usable: ask whether ş can actually be typed.
+          # Newer libxkbcommon refuses to answer at all when the locale has no Compose
+          # data, which is the normal state on a runner.
+          FLAG=""
+          xkbcli how-to-type --help 2>&1 | grep -q -- --disable-compose && FLAG=--disable-compose
+          xkbcli how-to-type $FLAG --layout uzqserty 0x15F | grep -qE '^[[:space:]]*[0-9]+'
           ACTION=uninstall sh ./install.sh
           test ! -f /usr/share/X11/xkb/symbols/uzqserty
+      # The variant question is only asked when a terminal is attached, and is read from
+      # /dev/tty, so the test gives the installer a pseudo-terminal and types into it.
+      - name: Answer the installer's question
+        run: python3 scripts/test-install-prompt.py
       - uses: actions/upload-artifact@v4
         with:
           name: dist

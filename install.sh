@@ -3,14 +3,16 @@
 #
 #   curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | sh
 #
-# Options, which have to be passed as environment variables because the script is read
-# from a pipe and cannot ask anything:
+# It asks which of the two layouts you want. To skip the question, or when there is no
+# terminal to ask on, set the options in the environment instead:
 #
-#   VARIANT=uz-altgr    install the AltGr variant instead of the default uz-qserty
+#   VARIANT=uz-qserty   ş ç ö ğ on the w c [ ] keys (the default)
+#   VARIANT=uz-altgr    US QWERTY untouched, the letters on AltGr
 #   ACTION=uninstall    remove it again
 #   REF=some-branch     install from a branch or tag other than main
 #
-#   curl -fsSL .../install.sh | VARIANT=uz-altgr sh
+#   curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh \
+#     | VARIANT=uz-altgr sh
 #
 # Windows is not covered: its .klc file has to be compiled with MSKLC, which is a GUI
 # installer. See README.md.
@@ -18,7 +20,7 @@ set -eu
 
 REPO="${REPO:-botirakhmedov/klfc_uzbek}"
 REF="${REF:-main}"
-VARIANT="${VARIANT:-uz-qserty}"
+VARIANT="${VARIANT:-}"
 ACTION="${ACTION:-install}"
 
 BUNDLE_NAME="Uzbek2026.bundle"
@@ -27,10 +29,83 @@ MACOS_DEST="$HOME/Library/Keyboard Layouts"
 say() { printf '%s\n' "$*"; }
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
 
-case "$VARIANT" in
-  uz-qserty | uz-altgr) ;;
-  *) die "unknown variant '$VARIANT'; expected uz-qserty or uz-altgr" ;;
-esac
+# What the AltGr key is called on this system.
+altgr() {
+  if [ "$(uname -s)" = "Darwin" ]; then
+    printf 'Option'
+  else
+    printf 'AltGr'
+  fi
+}
+
+# Whether there is a terminal to ask on. /dev/tty exists as a device node even with no
+# controlling terminal behind it, and the permission bits look fine, so the only honest
+# test is to open it.
+have_tty() {
+  { true > /dev/tty; } 2>/dev/null && { true < /dev/tty; } 2>/dev/null
+}
+
+# Ask which layout to install. Piping the script into sh puts the script itself on
+# stdin, so the question has to go to the terminal directly; where there is no terminal
+# — CI, a cron job, a container — the default stands.
+choose_variant() {
+  [ -n "$VARIANT" ] && return 0
+
+  if [ "$ACTION" != "install" ] || ! have_tty; then
+    VARIANT=uz-qserty
+    return 0
+  fi
+
+  {
+    printf '%s\n' "Which layout do you want?"
+    printf '%s\n' ""
+    printf '%s\n' "  1) uz-qserty   ş ç ö ğ get keys of their own, on w c [ ]"
+    printf '%s\n' "                 c and w are not letters of the 2026 alphabet, so no"
+    printf '%s\n' "                 letter has to move; w and c come back on $(altgr)."
+    printf '%s\n' ""
+    printf '%s\n' "  2) uz-altgr    US QWERTY is left exactly as it is"
+    printf '%s\n' "                 ş ç ö ğ are on $(altgr) + s, c, o, g."
+    printf '%s\n' ""
+  } > /dev/tty
+
+  while :; do
+    printf '%s' "Choose 1 or 2 [1]: " > /dev/tty
+    read -r answer < /dev/tty || answer=""
+    case "$answer" in
+      "" | 1) VARIANT=uz-qserty; break ;;
+      2) VARIANT=uz-altgr; break ;;
+      *) printf '%s\n' "Please answer 1 or 2." > /dev/tty ;;
+    esac
+  done
+  printf '\n' > /dev/tty
+}
+
+# What the keys do, printed after installing, because an installed keyboard nobody knows
+# how to type on is the same as no keyboard.
+tutorial() {
+  key="$(altgr)"
+  say ""
+  say "How it types:"
+  say ""
+  if [ "$VARIANT" = "uz-qserty" ]; then
+    say "  the w key  ->  ş          the c key  ->  ç"
+    say "  the [ key  ->  ö          the ] key  ->  ğ"
+    say "  the ' key  ->  ʼ          tutuq belgisi (U+02BC), a letter, not a quote mark"
+    say ""
+    say "  Shift gives Ş Ç Ö Ğ, as usual."
+    say ""
+    say "  w c [ ] ' are still reachable, on $key:"
+    say "    $key + w  ->  w       $key + c  ->  c       $key + '  ->  '"
+    say "    $key + [  ->  [       $key + ]  ->  ]"
+  else
+    say "  $key + s  ->  ş          $key + c  ->  ç"
+    say "  $key + o  ->  ö          $key + g  ->  ğ"
+    say "  $key + '  ->  ʼ          tutuq belgisi (U+02BC), a letter, not a quote mark"
+    say ""
+    say "  Hold Shift as well for Ş Ç Ö Ğ."
+    say "  Everything else is US QWERTY, unchanged."
+  fi
+}
 
 download() {
   url="$1"
@@ -86,13 +161,20 @@ install_macos() {
   cp -R "$source_bundle" "$MACOS_DEST/"
   clean_source
 
+  if [ "$VARIANT" = "uz-qserty" ]; then
+    name="Uzbek (2026) QŞERTY"
+  else
+    name="Uzbek (2026) AltGr"
+  fi
+
   say "Installed to $MACOS_DEST/$BUNDLE_NAME"
   say ""
   say "macOS only reads new keyboard layouts when you log in, so log out and back in."
-  say "Then add the layout under:"
+  say "Then add '$name' under:"
   say "  System Settings > Keyboard > Text Input > Input Sources > + > Others"
   say ""
-  say "Both variants are in the bundle; pick 'Uzbek (2026) QŞERTY' or 'Uzbek (2026) AltGr'."
+  say "Both layouts are in the bundle, so you can switch later without reinstalling."
+  tutorial
 }
 
 uninstall_macos() {
@@ -115,6 +197,23 @@ as_root() {
   fi
 }
 
+# How to switch to the layout right now, which depends on the session. Under Wayland
+# setxkbmap reaches XWayland only and leaves the real keyboard alone — it prints
+# "Running setxkbmap against an Xwayland server" and appears to do nothing — so the
+# compositor has to be told instead.
+session_hint() {
+  layout="$1"
+  if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
+    say "This is a Wayland session, where setxkbmap only reaches XWayland and leaves the"
+    say "real keyboard alone. Add the layout in your desktop's keyboard settings, or on"
+    say "GNOME run:"
+    say "  gsettings set org.gnome.desktop.input-sources sources \"[('xkb','$layout')]\""
+  else
+    say "Pick it in your desktop's keyboard settings, or try it in this session with:"
+    say "  setxkbmap $layout"
+  fi
+}
+
 install_linux() {
   prepare_source
   source_dir="$SOURCE_ROOT/dist/linux/$VARIANT"
@@ -127,8 +226,8 @@ install_linux() {
 
   say "Installed the XKB layout '$layout'."
   say ""
-  say "Pick it in your desktop's keyboard settings, or try it in the current session with:"
-  say "  setxkbmap $layout"
+  session_hint "$layout"
+  tutorial
 }
 
 uninstall_linux() {
@@ -140,6 +239,13 @@ uninstall_linux() {
   clean_source
   say "Removed."
 }
+
+choose_variant
+
+case "$VARIANT" in
+  uz-qserty | uz-altgr) ;;
+  *) die "unknown variant '$VARIANT'; expected uz-qserty or uz-altgr" ;;
+esac
 
 case "$(uname -s)" in
   Darwin)
