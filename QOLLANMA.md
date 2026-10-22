@@ -55,6 +55,26 @@ QWERTY umuman özgarmaydi, yangi harflar esa `AltGr` + `s`, `c`, `o`, `g` da tur
 Örnatiş
 -------
 
+### Bitta buyruq bilan (macOS yoki Linux)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/botirakhmedov/klfc_uzbek/main/install.sh | sh
+```
+
+Skript pipe'dan öqilgani uçun hech narsa söray olmaydi — sozlamalar environment orqali
+beriladi:
+
+```sh
+curl -fsSL .../install.sh | VARIANT=uz-altgr sh     # ikkinçi variant
+curl -fsSL .../install.sh | ACTION=uninstall sh     # öçiriş
+```
+
+macOS'da bundle `~/Library/Keyboard Layouts` ga köçiriladi, Linux'da esa XKB skripti
+`sudo` bilan işga tuşiriladi. Windows bu yölga kirmaydi — u yerda `.klc` ni MSKLC bilan
+yiğiş kerak, pastda yozilgan.
+
+Quyidagilar — şu işning qölda bajariliş yöli.
+
 ### macOS
 
 ```sh
@@ -71,7 +91,7 @@ dan tanlang.
 
 `dist/windows/uz-qserty/uz-qserty.klc` — bu layout'ning özi emas, **MSKLC uçun manba
 fayl**. [MSKLC](https://www.microsoft.com/en-us/download/details.aspx?id=102134) da
-açing, *Project → Build DLL and Setup Package* qiling, söng çiqqan installer'ni işga
+oçing, *Project → Build DLL and Setup Package* qiling, söng çiqqan installer'ni işga
 tuşiring.
 
 Şu papkada AHK skript va PKL varianti ham bor — ular hech narsa örnatmay işlaydi,
@@ -95,20 +115,20 @@ cd android && ./gradlew :app:assembleDebug
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Ilovani açib, ikki qadamni bajaring: klaviaturani yoqiş va tanlaş.
+Ilovani oçib, ikki qadamni bajaring: klaviaturani yoqiş va tanlaş.
 
 Telefonda `w` va `c` — `ş` va `ç` ni **bosib turganda** çiqadi. Raqamlar yuqori qatorda.
 
 ### iOS
 
-`ios/UzbekKeyboard.xcodeproj` ni Xcode'da açing, ikkala target'ga öz signing team'ingizni
+`ios/UzbekKeyboard.xcodeproj` ni Xcode'da oçing, ikkala target'ga öz signing team'ingizni
 qöying va telefonga yuklang. Söng: *Settings → General → Keyboard → Keyboards → Add New
 Keyboard*.
 
 Köp beriladigan savollar
 ------------------------
 
-**`?` işlamayapti, Telegram yorliqlar oynasini açyapti.**
+**`?` işlamayapti, Telegram yorliqlar oynasini oçyapti.**
 Bu layout muammosi emas. Telegram Desktop'da böş xabar maydonida `Shift+?` — yorliqlar
 oynasining özi. Oldida harf bölsa `?` oddiy yoziladi. Ingliz layout'ida ham xuddi şunday.
 

@@ -34,7 +34,7 @@ final class SetupViewController: UIViewController {
         steps.numberOfLines = 0
 
         let button = UIButton(type: .system)
-        button.setTitle("Sozlamalarni açiş", for: .normal)
+        button.setTitle("Sozlamalarni oçiş", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         button.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
 

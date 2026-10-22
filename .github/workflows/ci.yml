@@ -18,6 +18,16 @@ jobs:
         run: python3 scripts/verify-desktop.py
       - name: Install each XKB layout and type the whole alphabet on it
         run: ./scripts/verify-xkb.sh
+      # Run from the checkout, so the installer under test is the one being checked
+      # rather than whatever is on main.
+      - name: Install and uninstall through install.sh
+        run: |
+          sudo apt-get install -y shellcheck
+          shellcheck -s sh install.sh
+          sh ./install.sh
+          test -f /usr/share/X11/xkb/symbols/uzqserty
+          ACTION=uninstall sh ./install.sh
+          test ! -f /usr/share/X11/xkb/symbols/uzqserty
       - uses: actions/upload-artifact@v4
         with:
           name: dist
